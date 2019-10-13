@@ -5,10 +5,14 @@ require 'google/protobuf'
 
 Google::Protobuf::DescriptorPool.generated_pool.build do
   add_file("protob.proto", :syntax => :proto3) do
+    add_message "protob.Void" do
+    end
     add_message "protob.Pong" do
       optional :value, :string, 1
     end
-    add_message "protob.Void" do
+    add_message "protob.Version" do
+      optional :version, :string, 1
+      optional :build, :string, 2
     end
     add_message "protob.Params" do
       optional :text, :string, 1
@@ -70,8 +74,9 @@ Google::Protobuf::DescriptorPool.generated_pool.build do
 end
 
 module Protob
-  Pong = Google::Protobuf::DescriptorPool.generated_pool.lookup("protob.Pong").msgclass
   Void = Google::Protobuf::DescriptorPool.generated_pool.lookup("protob.Void").msgclass
+  Pong = Google::Protobuf::DescriptorPool.generated_pool.lookup("protob.Pong").msgclass
+  Version = Google::Protobuf::DescriptorPool.generated_pool.lookup("protob.Version").msgclass
   Params = Google::Protobuf::DescriptorPool.generated_pool.lookup("protob.Params").msgclass
   NameStrings = Google::Protobuf::DescriptorPool.generated_pool.lookup("protob.NameStrings").msgclass
   NameString = Google::Protobuf::DescriptorPool.generated_pool.lookup("protob.NameString").msgclass

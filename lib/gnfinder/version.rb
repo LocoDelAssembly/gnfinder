@@ -2,7 +2,7 @@
 
 # Gnfinder is a namespace module for gndinfer gem.
 module Gnfinder
-  VERSION = '0.2.2'
+  VERSION = '0.3.0'
 
   def self.version
     VERSION

@@ -1,11 +1,22 @@
 # frozen_string_literal: true
 
 module Gnfinder
+  GNFINDER_MIN_VERSION = 'v0.8.10'
+
   # Gnfinder::Client connects to gnfinder server
   class Client
     def initialize(host = '0.0.0.0', port = '8778')
       @stub = Protob::GNFinder::Stub.new("#{host}:#{port}",
                                          :this_channel_is_insecure)
+      return if gnfinder_version.version >= GNFINDER_MIN_VERSION
+
+      raise 'gRPC server of gnfinder should be at least ' \
+            ' #{GNFINDER_MIN_VERSION}.\n Download latest version from ' \
+            'https://github.com/gnames/gnfinder/releases/latest.'
+    end
+
+    def gnfinder_version
+      @stub.ver(Protob::Void.new)
     end
 
     def ping
@@ -24,7 +35,7 @@ module Gnfinder
         params[:sources] = opts[:sources]
       end
 
-      @stub.find_names(Protob::Params.new(params)).names
+      @stub.find_names(Protob::Params.new(params))
     end
     # rubocop:enable Metrics/AbcSize, Metrics/CyclomaticComplexity
   end

@@ -4,6 +4,17 @@ Ruby gem to access functionality of [gnfinder] project written in Go. This gem
 allows to perform fast and accurate scientific name finding in UTF-8 encoded
 plain texts for Ruby-based projects.
 
+- [gnfinder](#gnfinder)
+  - [Requirements](#requirements)
+  - [Installation](#installation)
+  - [Usage](#usage)
+    - [Finding names in a text using default settings](#finding-names-in-a-text-using-default-settings)
+    - [Always enable Bayes search](#always-enable-bayes-search)
+    - [Set a language for the text](#set-a-language-for-the-text)
+    - [Set verification option](#set-verification-option)
+    - [Set preferred data-sources list](#set-preferred-data-sources-list)
+    - [Combination of parameters.](#combination-of-parameters)
+  - [Development](#development)
 
 ## Requirements
 
@@ -38,7 +49,7 @@ have another location for the server use:
 
 
 
-```
+```ruby
 require 'gnfinder'
 
 # you can use global public gnfinder server
@@ -51,12 +62,14 @@ gf = Gnfinder::Client.new(host = '0.0.0.0', port = 8000)
 
 ### Finding names in a text using default settings
 
+You can find format of returning result in [proto file] or in [tests]
+
 ```ruby
 txt = File.read('utf8-text-with-names.txt')
 
-names = gf.find_names(txt)
-puts names[0].value
-puts names[0].odds
+res = gf.find_names(txt)
+puts res.names[0].value
+puts res.names[0].odds
 ```
 
 Returned result will have the following methods for each name:
@@ -75,7 +88,7 @@ French, Portugese) would generate too many false positives. However you can
 override this default setting by running:
 
 ```ruby
-names = gf.find_names(txt, with_bayes: true)
+names = gf.find_names(txt, with_bayes: true).names
 ```
 
 ### Set a language for the text
@@ -90,13 +103,21 @@ this setting will be ignored.
 List of supported languages will increase with time.
 
 ```ruby
-names = gf.find_names(txt, language: 'eng')
-names = gf.find_names(txt, language: 'deu')
+res = gf.find_names(txt, language: 'eng')
+puts res.language_forced
+puts res.language_used
+res = gf.find_names(txt, language: 'deu')
+puts res.language_forced
+puts res.language_used
 
-# setting is ignored, only known by gnfinder
-# 3-character notations iso-639-2 code are supported
-names = gf.find_names(txt, language: 'english')
-names = gf.find_names(txt, language: 'rus')
+# Setting is ignored if language string is not known by gnfinder.
+# Only 3-character notations iso-639-2 code are supported
+res = gf.find_names(txt, language: 'english')
+puts res.language_forced
+puts res.language_used
+res = gf.find_names(txt, language: 'rus')
+puts res.language_forced
+puts res.language_used
 ```
 
 ### Set verification option
@@ -121,7 +142,7 @@ return the following information:
   * path: the classification path of a matched name (if available)
 
 ```ruby
-names = gf.find_names(txt, with_verification: true)
+res = gf.find_names(txt, with_verification: true)
 ```
 
 ### Set preferred data-sources list
@@ -132,7 +153,7 @@ data-source (data-sources). There is a parameter that takes IDs from the
 results will be returned back.
 
 ```ruby
-names = gf.find_names(txt, with_verification: true, sources: [1, 4, 179])
+res = gf.find_names(txt, with_verification: true, sources: [1, 4, 179])
 ```
 ### Combination of parameters.
 
@@ -142,11 +163,11 @@ a particular context. It is silently ignored.
 ```ruby
 # Runs Bayes' algorithms using English training set, runs verification and
 # returns matched results for 3 data-sources if they are available.
-names = gf.find_names(txt, language: eng, with_verification: true,
+res = gf.find_names(txt, language: eng, with_verification: true,
                            sources: [1, 4, 179])
 
 # Ignores `sources:` settings, because `with_verification` is not set to `true`
-names = gf.find_names(txt, language: eng, sources: [1, 4, 179])
+res = gf.find_names(txt, language: eng, sources: [1, 4, 179])
 ```
 
 ## Development
@@ -191,3 +212,5 @@ bundle exec rspec
 [Go]: https://golang.org/doc/install
 [client]: https://github.com/GlobalNamesArchitecture/gnfinder/blob/master/lib/gnfinder/client.rb
 [data-source list]: http://index.globalnames.org/datasource
+[proto file]: https://github.com/GlobalNamesArchitecture/gnfinder/blob/master/lib/protob_pb.rb
+[tests]: https://github.com/GlobalNamesArchitecture/gnfinder/blob/master/spec/lib/client_spec.rb
