@@ -4,64 +4,68 @@
 require 'google/protobuf'
 
 Google::Protobuf::DescriptorPool.generated_pool.build do
-  add_message "protob.Pong" do
-    optional :value, :string, 1
-  end
-  add_message "protob.Void" do
-  end
-  add_message "protob.Params" do
-    optional :text, :string, 1
-    optional :with_bayes, :bool, 3
-    optional :language, :string, 4
-    optional :with_verification, :bool, 5
-    repeated :sources, :int32, 6
-  end
-  add_message "protob.NameStrings" do
-    optional :date, :string, 1
-    optional :language, :string, 2
-    optional :total_tokens, :int32, 3
-    optional :total_candidates, :int32, 4
-    optional :total_names, :int32, 5
-    repeated :names, :message, 6, "protob.NameString"
-  end
-  add_message "protob.NameString" do
-    optional :type, :string, 1
-    optional :verbatim, :string, 2
-    optional :name, :string, 3
-    optional :odds, :float, 4
-    optional :offset_start, :int32, 5
-    optional :offset_end, :int32, 6
-    optional :verification, :message, 7, "protob.Verification"
-  end
-  add_message "protob.Verification" do
-    optional :best_result, :message, 1, "protob.ResultData"
-    repeated :preferred_results, :message, 2, "protob.ResultData"
-    optional :data_sources_num, :int32, 3
-    optional :data_source_quality, :string, 4
-    optional :retries, :int32, 5
-    optional :error, :string, 6
-  end
-  add_message "protob.ResultData" do
-    optional :data_source_id, :int32, 1
-    optional :data_source_title, :string, 2
-    optional :taxon_id, :string, 3
-    optional :matched_name, :string, 4
-    optional :matched_canonical, :string, 5
-    optional :current_name, :string, 6
-    optional :synonym, :bool, 7
-    optional :classification_path, :string, 8
-    optional :classification_rank, :string, 9
-    optional :classification_ids, :string, 10
-    optional :edit_distance, :int32, 11
-    optional :stem_edit_distance, :int32, 12
-    optional :match_type, :enum, 13, "protob.MatchType"
-  end
-  add_enum "protob.MatchType" do
-    value :NONE, 0
-    value :EXACT, 1
-    value :FUZZY, 2
-    value :PARTIAL_EXACT, 3
-    value :PARTIAL_FUZZY, 4
+  add_file("protob.proto", :syntax => :proto3) do
+    add_message "protob.Pong" do
+      optional :value, :string, 1
+    end
+    add_message "protob.Void" do
+    end
+    add_message "protob.Params" do
+      optional :text, :string, 1
+      optional :with_bayes, :bool, 3
+      optional :language, :string, 4
+      optional :with_verification, :bool, 5
+      repeated :sources, :int32, 6
+    end
+    add_message "protob.NameStrings" do
+      optional :date, :string, 1
+      optional :language_used, :string, 2
+      optional :language_detected, :string, 3
+      optional :language_forced, :bool, 4
+      optional :total_tokens, :int32, 5
+      optional :total_candidates, :int32, 6
+      optional :total_names, :int32, 7
+      repeated :names, :message, 8, "protob.NameString"
+    end
+    add_message "protob.NameString" do
+      optional :type, :string, 1
+      optional :verbatim, :string, 2
+      optional :name, :string, 3
+      optional :odds, :float, 4
+      optional :offset_start, :int32, 5
+      optional :offset_end, :int32, 6
+      optional :verification, :message, 7, "protob.Verification"
+    end
+    add_message "protob.Verification" do
+      optional :best_result, :message, 1, "protob.ResultData"
+      repeated :preferred_results, :message, 2, "protob.ResultData"
+      optional :data_sources_num, :int32, 3
+      optional :data_source_quality, :string, 4
+      optional :retries, :int32, 5
+      optional :error, :string, 6
+    end
+    add_message "protob.ResultData" do
+      optional :data_source_id, :int32, 1
+      optional :data_source_title, :string, 2
+      optional :taxon_id, :string, 3
+      optional :matched_name, :string, 4
+      optional :matched_canonical, :string, 5
+      optional :current_name, :string, 6
+      optional :synonym, :bool, 7
+      optional :classification_path, :string, 8
+      optional :classification_rank, :string, 9
+      optional :classification_ids, :string, 10
+      optional :edit_distance, :int32, 11
+      optional :stem_edit_distance, :int32, 12
+      optional :match_type, :enum, 13, "protob.MatchType"
+    end
+    add_enum "protob.MatchType" do
+      value :NONE, 0
+      value :EXACT, 1
+      value :FUZZY, 2
+      value :PARTIAL_EXACT, 3
+      value :PARTIAL_FUZZY, 4
+    end
   end
 end
 
