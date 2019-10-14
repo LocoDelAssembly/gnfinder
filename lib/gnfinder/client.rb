@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Gnfinder
-  GNFINDER_MIN_VERSION = 'v0.8.10'
+  GNFINDER_MIN_VERSION = 'v0.8.11'
 
   # Gnfinder::Client connects to gnfinder server
   class Client
