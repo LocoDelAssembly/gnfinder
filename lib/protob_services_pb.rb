@@ -16,7 +16,7 @@ module Protob
 
       rpc :Ping, Void, Pong
       rpc :Ver, Void, Version
-      rpc :FindNames, Params, NameStrings
+      rpc :FindNames, Params, Output
     end
 
     Stub = Service.rpc_stub_class

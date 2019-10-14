@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Gnfinder
-  GNFINDER_MIN_VERSION = 'v0.8.10'
+  GNFINDER_MIN_VERSION = 'v0.9.0'
 
   # Gnfinder::Client connects to gnfinder server
   class Client
@@ -28,8 +28,11 @@ module Gnfinder
       raise 'Text cannot be empty' if text.to_s.strip == ''
 
       params = { text: text }
-      params[:with_bayes] = true if opts[:with_bayes]
+      params[:bayes] = false if opts[:no_bayes]
       params[:language] = opts[:language] if opts[:language].to_s.strip != ''
+      if opts[:detect_language]
+        params[:detect_language] = opts[:detect_language]
+      end
       params[:with_verification] = true if opts[:with_verification]
       if opts[:sources] && !opts[:sources].empty?
         params[:sources] = opts[:sources]

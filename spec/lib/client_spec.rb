@@ -23,13 +23,13 @@ describe Gnfinder::Client do
       expect(names[0].verbatim).to eq 'Pardosa moesta'
     end
 
-    it 'supports with_bayes option' do
+    it 'supports no_bayes option' do
       names = subject.find_names('Pardosa moesta is a spider').names
-      expect(names[0].odds).to eq 0.0
-
-      opts = { with_bayes: true }
-      names = subject.find_names('Pardosa moesta is a spider', opts).names
       expect(names[0].odds).to be > 10.0
+
+      opts = { no_bayes: true }
+      names = subject.find_names('Pardosa moesta is a spider', opts).names
+      expect(names[0].odds).to eq 0.0
     end
 
     it 'supports language option' do
