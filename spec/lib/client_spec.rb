@@ -107,6 +107,7 @@ describe Gnfinder::Client do
       opts = { language: 'German' }
       res = subject
             .find_names('Pardosa moesta is a very interesting spider', opts)
+      expect(res.finder_version).to match(/^v\d\.\d\.\d/)
       expect(res.language_detected).to eq 'eng'
       expect(res.language_forced).to eq false
       expect(res.language_used).to eq 'eng'
