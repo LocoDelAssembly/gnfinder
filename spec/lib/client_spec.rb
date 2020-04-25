@@ -11,8 +11,17 @@ describe Gnfinder::Client do
   end
 
   describe '#version' do
-    it 'returns version of Go gnfindera' do
-      expect(subject.gnfinder_version.version).to match(/^v\d\.\d\.\d/)
+    it 'returns version of Go gnfinder' do
+      expect(subject.gnfinder_version.version).to match(/^v\d+\.\d+\.\d+/)
+    end
+  end
+
+  describe '#good_gnfinder_version' do
+    it 'returns true if gnfinder version is equal or bigger than min version' do
+      expect(subject.good_gnfinder_version('v0.0.0', 'v0.0.0')).to be true
+      expect(subject.good_gnfinder_version('v0.10.0', 'v0.8.1')).to be true
+      expect(subject.good_gnfinder_version('v0.10.0', 'v0.10.0')).to be true
+      expect(subject.good_gnfinder_version('v0.10.0', 'v0.10.1')).to be false
     end
   end
 
@@ -21,6 +30,13 @@ describe Gnfinder::Client do
       names = subject.find_names('Pardosa moesta is a spider').names
       expect(names[0].name).to eq 'Pardosa moesta'
       expect(names[0].verbatim).to eq 'Pardosa moesta'
+    end
+
+    it 'finds nomenclatural annotation for a name' do
+      names = subject.find_names('Pardosa moesta sp. n. is a spider').names
+      expect(names[0].name).to eq 'Pardosa moesta'
+      expect(names[0].annot_nomen).to eq 'sp. n.'
+      expect(names[0].annot_nomen_type).to eq :SP_NOV
     end
 
     it 'supports no_bayes option' do
@@ -96,6 +112,15 @@ describe Gnfinder::Client do
       expect(res.detect_language).to be true
     end
 
+    it 'supports tokens around option' do
+      opts = { tokens_around: 2 }
+      names = subject.find_names(
+        'It is very interesting that Pardosa moesta is a spider', opts
+      ).names
+      expect(names[0].words_before).to eq %w[interesting that]
+      expect(names[0].words_after).to eq %w[is a]
+    end
+
     it 'supports verification option' do
       opts = { verification: true }
       names = subject.find_names('Pardosa moesta is a spider', opts).names
@@ -154,7 +179,7 @@ describe Gnfinder::Client do
       opts = { language: 'German' }
       res = subject
             .find_names('Pardosa moesta is a very interesting spider', opts)
-      expect(res.finder_version).to match(/^v\d\.\d\.\d/)
+      expect(res.finder_version).to match(/^v\d+\.\d+\.\d+/)
       expect(res.language_detected).to eq ''
       expect(res.detect_language).to eq false
       expect(res.language).to eq 'eng'
