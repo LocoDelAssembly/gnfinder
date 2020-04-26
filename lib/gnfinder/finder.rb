@@ -35,6 +35,10 @@ module Gnfinder
         params[:sources] = opts[:sources]
       end
 
+      if opts[:tokens_around] && opts[:tokens_around] > 0
+          params[:tokens_around] = opts[:tokens_around]
+      end
+
       output = nil
       callback = FFI::Function.new(:void, [:string]) { |str| output = str }
       find_go(text, params.to_json, callback)
@@ -45,14 +49,24 @@ module Gnfinder
         output.delete("metadata")
 
         output = convert_snake_case(output)
-
-        output.total_tokens = output.total_words if output.total_words
+        if output.total_words
+          output.total_tokens = output.total_words
+          output.delete_field("total_words")
+        end
 
         output.names ||= []
         output.names.each do |name| 
+          [%w[start offset_start], %w[end offset_end], %w[annotation_nomen annot_nomen], %w[annotation_nomen_type annot_nomen_type]].each do |pair|
+            if name[pair[0]]
+              name[pair[1]] = name[pair[0]]
+              name.delete_field(pair[0])
+            end
+          end
+
           name.odds ||= 0.0
-          name.offset_start = name.start || 0
-          name.offset_end = name.end || 0
+          name.offset_start ||=  0
+          name.offset_end ||=  0
+          name.annot_nomen_type = name.annot_nomen_type.to_sym if name.annot_nomen_type
 
           best_result = name.dig(:verification, :best_result)
 
@@ -78,7 +92,7 @@ module Gnfinder
         if value.kind_of?(Hash)
           value = convert_snake_case(value)
         elsif value.kind_of?(Array)
-          value = value.map { |v| convert_snake_case(v) if v.kind_of?(Hash) }
+          value = value.map { |v| v.kind_of?(Hash) ? convert_snake_case(v) : v  }
         end
 
         res[str.to_sym] =  value

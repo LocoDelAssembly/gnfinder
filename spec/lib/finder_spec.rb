@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 # Gnfinder is a namespace module for gndinfer gem.
-describe Gnfinder::Client do
+describe Gnfinder::Finder do
   let(:subject) { Gnfinder::Finder }
 
   describe '#find_names' do
@@ -9,6 +9,13 @@ describe Gnfinder::Client do
       names = subject.find_names('Pardosa moesta is a spider').names
       expect(names[0].name).to eq 'Pardosa moesta'
       expect(names[0].verbatim).to eq 'Pardosa moesta'
+    end
+
+    it 'finds nomenclatural annotation for a name' do
+      names = subject.find_names('Pardosa moesta sp. n. is a spider').names
+      expect(names[0].name).to eq 'Pardosa moesta'
+      expect(names[0].annot_nomen).to eq 'sp. n.'
+      expect(names[0].annot_nomen_type).to eq :SP_NOV
     end
 
     it 'supports no_bayes option' do
@@ -84,6 +91,15 @@ describe Gnfinder::Client do
       expect(res.detect_language).to be true
     end
 
+    it 'supports tokens around option' do
+      opts = { tokens_around: 2 }
+      names = subject.find_names(
+        'It is very interesting that Pardosa moesta is a spider', opts
+      ).names
+      expect(names[0].words_before).to eq %w[interesting that]
+      expect(names[0].words_after).to eq %w[is a]
+    end
+
     it 'supports verification option' do
       opts = { verification: true }
       names = subject.find_names('Pardosa moesta is a spider', opts).names
@@ -142,7 +158,7 @@ describe Gnfinder::Client do
       opts = { language: 'German' }
       res = subject
             .find_names('Pardosa moesta is a very interesting spider', opts)
-      expect(res.finder_version).to match(/^v\d\.\d\.\d/)
+      expect(res.finder_version).to match(/^v\d+\.\d+\.\d+/)
       expect(res.language_detected).to eq ''
       expect(res.detect_language).to eq false
       expect(res.language).to eq 'eng'
