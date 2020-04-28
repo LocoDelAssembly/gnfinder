@@ -72,6 +72,11 @@ module Gnfinder
 
           if best_result
             best_result.match_type = getMatchType(best_result.match_type)
+
+            if best_result.classification_i_ds
+              best_result["classification_ids"] = best_result.classification_i_ds
+              best_result.delete_field("classification_i_ds")
+            end
           end
         end
       end
