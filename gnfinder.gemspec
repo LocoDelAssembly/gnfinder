@@ -20,7 +20,7 @@ Gem::Specification.new do |gem|
                       .reject { |f| f.match(%r{^(test|spec|features)/}) }
 
   gem.require_paths = ['lib']
-  gem.required_ruby_version = '~> 2.6'
+  gem.required_ruby_version = '>= 2.6', '< 4'
   gem.add_dependency 'grpc', '~> 1.28'
   gem.add_dependency 'grpc-tools', '~> 1.28'
   gem.add_development_dependency 'bundler', '~> 2.1'
