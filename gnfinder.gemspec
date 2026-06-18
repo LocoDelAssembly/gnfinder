@@ -20,9 +20,8 @@ Gem::Specification.new do |gem|
                       .reject { |f| f.match(%r{^(test|spec|features)/}) }
 
   gem.require_paths = ['lib']
-  gem.required_ruby_version = '>= 2.6', '< 4'
+  gem.required_ruby_version = '>= 2.6', '< 4.1'
   gem.add_dependency 'rest-client', '~> 2.1'
-  gem.add_development_dependency 'bundler', '~> 2.3'
   gem.add_development_dependency 'byebug', '~> 11.1'
   gem.add_development_dependency 'rake', '~> 13.0'
   gem.add_development_dependency 'rspec', '~> 3.11'
