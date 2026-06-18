@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'ostruct'
+
 module Gnfinder
   # Gnfinder::Client connects to gnfinder server
   class Client
